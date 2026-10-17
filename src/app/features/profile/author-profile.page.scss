@@ -1,0 +1,102 @@
+.author-page {
+  max-width: 900px;
+}
+
+.author-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.author-hero {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 8px 0 18px;
+}
+
+.author-text {
+  min-width: 0;
+}
+
+.author-text h2 {
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.author-text p {
+  color: var(--white-70);
+  font-size: 13px;
+  margin-top: 3px;
+  overflow-wrap: anywhere;
+}
+
+.games-title {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.author-grid {
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+
+.author-card {
+  overflow: hidden;
+}
+
+.cover-wrap {
+  position: relative;
+}
+
+.author-cover {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  display: block;
+  background: rgba(255, 30, 156, 0.18);
+}
+
+.author-cover.fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  font-weight: 800;
+}
+
+.favorite-star {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: var(--gold);
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.6));
+}
+
+.author-card-info {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.author-card-info strong {
+  font-size: 13.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.author-card-info span {
+  color: var(--magenta-glow);
+  font-size: 12px;
+  font-weight: 600;
+}

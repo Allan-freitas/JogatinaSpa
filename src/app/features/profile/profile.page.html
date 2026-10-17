@@ -1,0 +1,181 @@
+<div class="page profile-page">
+  <app-page-header [title]="i18n.t('profile_title')">
+    <button type="button" class="icon-btn" (click)="load()" [title]="i18n.t('refresh_action')">
+      <app-icon name="refresh" [size]="20" />
+    </button>
+  </app-page-header>
+
+  @if (error()) {
+    <div class="profile-error">
+      <span class="error-text">{{ error() }}</span>
+      <button type="button" class="btn small ghost" (click)="load()">{{ i18n.t('retry') }}</button>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="loading"><span class="spinner"></span></div>
+  } @else if (profile(); as profile) {
+    <div class="profile-hero">
+      <app-avatar
+        [photoUrl]="photoUrl()"
+        [name]="profile.firstName || profile.email"
+        [size]="112"
+      />
+      <h2>{{ profile.firstName }} {{ profile.lastName }}</h2>
+      <p class="muted">{{ profile.email }}</p>
+    </div>
+
+    <section class="card info-card">
+      <div class="info-row">
+        <app-icon name="cake" [size]="21" />
+        <div>
+          <span>{{ i18n.t('birth_label') }}</span>
+          <strong>{{ birthDisplay() || i18n.t('not_informed') }}</strong>
+        </div>
+      </div>
+      <div class="info-row">
+        <app-icon name="interests" [size]="21" />
+        <div>
+          <span>{{ i18n.t('hobbies_label') }}</span>
+          <strong>{{ profile.hobbies || i18n.t('not_informed') }}</strong>
+        </div>
+      </div>
+      <div class="info-row">
+        <app-icon name="place" [size]="21" />
+        <div>
+          <span>{{ i18n.t('country_label') }}</span>
+          <strong>{{ countryLabel(profile.country) }}</strong>
+        </div>
+      </div>
+    </section>
+
+    <div class="profile-actions">
+      <button type="button" class="btn primary" (click)="startEdit()">
+        <app-icon name="person" [size]="18" />
+        {{ i18n.t('edit_profile') }}
+      </button>
+      <button type="button" class="btn ghost" (click)="openFriends()">
+        <app-icon name="group" [size]="18" />
+        {{ i18n.t('friends_button') }}
+      </button>
+    </div>
+  }
+</div>
+
+@if (editing()) {
+  <app-modal (closed)="closeEdit()">
+    <div class="modal-head">
+      <h2>{{ i18n.t('edit_profile') }}</h2>
+      <button
+        type="button"
+        class="icon-btn"
+        (click)="closeEdit()"
+        [attr.aria-label]="i18n.t('close')"
+      >
+        <app-icon name="close" [size]="20" />
+      </button>
+    </div>
+
+    <div class="photo-edit">
+      <app-avatar
+        [photoUrl]="photoPreview() || photoUrl()"
+        [name]="profile()?.firstName || 'Jogador'"
+        [size]="96"
+      />
+      <label class="camera-btn" [title]="i18n.t('change_photo')">
+        <app-icon name="camera" [size]="18" />
+        <input type="file" accept="image/*" hidden (change)="onPhotoPicked($event)" />
+      </label>
+    </div>
+    @if (photoError()) {
+      <p class="error-text photo-error">{{ photoError() }}</p>
+    }
+
+    <div class="stack edit-fields">
+      <label class="field">
+        <span>{{ i18n.t('birth_label') }}</span>
+        <input
+          class="input"
+          type="date"
+          [max]="today"
+          [value]="birthDate() ?? ''"
+          (input)="birthDate.set($any($event.target).value || null)"
+        />
+      </label>
+
+      <label class="field">
+        <span>{{ i18n.t('hobbies_label') }}</span>
+        <textarea
+          class="textarea"
+          rows="3"
+          maxlength="500"
+          [placeholder]="i18n.t('hobbies_hint')"
+          [value]="hobbies()"
+          (input)="hobbies.set($any($event.target).value)"
+        ></textarea>
+        <span class="hint">{{ hobbies().length }}/500</span>
+      </label>
+
+      <div class="field country-field">
+        <span>{{ i18n.t('country_label') }}</span>
+        <button type="button" class="country-trigger" (click)="countryOpen.set(!countryOpen())">
+          <span>{{ country() ? selectedCountryLabel() : i18n.t('country_pick') }}</span>
+          <app-icon name="chevron-down" [size]="18" />
+        </button>
+
+        @if (countryOpen()) {
+          <button
+            type="button"
+            class="picker-backdrop"
+            (click)="countryOpen.set(false)"
+            tabindex="-1"
+          ></button>
+          <div class="country-menu">
+            <input
+              class="input"
+              type="search"
+              [placeholder]="i18n.t('country_search')"
+              [value]="countryQuery()"
+              (input)="countryQuery.set($any($event.target).value)"
+            />
+            <div class="country-options">
+              <button type="button" class="country-option" (click)="pickCountry(null)">
+                <span>{{ i18n.t('country_none') }}</span>
+                @if (!country()) {
+                  <app-icon name="check" [size]="17" />
+                }
+              </button>
+              @for (item of filteredCountries(); track item.code) {
+                <button type="button" class="country-option" (click)="pickCountry(item.code)">
+                  <span
+                    ><span class="flag">{{ flagOf(item.code) }}</span> {{ item.name }}</span
+                  >
+                  @if (country() === item.code) {
+                    <app-icon name="check" [size]="17" />
+                  }
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (error()) {
+        <p class="error-text">{{ error() }}</p>
+      }
+
+      <div class="modal-actions">
+        <button type="button" class="btn ghost" [disabled]="saving()" (click)="closeEdit()">
+          {{ i18n.t('cancel') }}
+        </button>
+        <button type="button" class="btn primary" [disabled]="saving()" (click)="save()">
+          @if (saving()) {
+            <span class="spinner white small"></span>
+          } @else {
+            {{ i18n.t('save') }}
+          }
+        </button>
+      </div>
+    </div>
+  </app-modal>
+}

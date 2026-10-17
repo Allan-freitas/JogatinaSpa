@@ -1,0 +1,111 @@
+<div class="page">
+  <app-page-header [title]="i18n.t('library_title')">
+    <a class="icon-btn" routerLink="/catalog" [title]="i18n.t('search_catalog')">
+      <app-icon name="search" [size]="20" />
+    </a>
+    <button type="button" class="icon-btn" (click)="load()" [title]="i18n.t('refresh_action')">
+      <app-icon name="refresh" [size]="20" />
+    </button>
+  </app-page-header>
+
+  <div class="chip-row filters">
+    <button type="button" class="chip" [class.active]="filter() === null" (click)="setFilter(null)">
+      {{ i18n.t('filter_all') }}
+    </button>
+    @for (status of statuses; track status.value) {
+      <button
+        type="button"
+        class="chip"
+        [class.active]="filter() === status.value"
+        (click)="setFilter(status.value)"
+      >
+        {{ i18n.t(status.labelKey) }}
+      </button>
+    }
+  </div>
+
+  @if (error()) {
+    <div class="library-error">
+      <span class="error-text">{{ error() }}</span>
+      <button type="button" class="btn small ghost" (click)="load()">{{ i18n.t('retry') }}</button>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="loading"><span class="spinner"></span></div>
+  } @else if (visible().length === 0) {
+    <div class="empty-state card">
+      <p class="empty">{{ i18n.t('library_empty') }}</p>
+      <a class="btn primary" routerLink="/catalog">
+        <app-icon name="search" [size]="17" />
+        {{ i18n.t('catalog_title') }}
+      </a>
+    </div>
+  } @else {
+    <div class="library-list">
+      @for (game of visible(); track game.id) {
+        <article class="card game-row fade-in" (click)="openEditor(game)">
+          @if (coverUrl(game.coverImageUrl); as cover) {
+            <img class="game-cover" [src]="cover" [alt]="game.title" loading="lazy" />
+          } @else {
+            <div class="game-cover fallback">{{ game.title.charAt(0).toUpperCase() }}</div>
+          }
+
+          <div class="game-info">
+            <strong>{{ game.title }}</strong>
+            <span class="muted small">{{ game.genre }} • {{ game.platform }}</span>
+            <span
+              class="status-chip"
+              [class.wishlist]="game.status === 'Wishlist'"
+              [class.playing]="game.status === 'Playing'"
+              [class.completed]="game.status === 'Completed'"
+              >{{ statusLabel(game.status) }}</span
+            >
+          </div>
+
+          <div class="game-actions" (click)="$event.stopPropagation()">
+            <button
+              type="button"
+              class="icon-btn"
+              [class.favorite-on]="game.isFavorite"
+              [disabled]="updating().has(game.gameId) || removing().has(game.gameId)"
+              (click)="toggleFavorite(game)"
+              [title]="i18n.t('favorite')"
+            >
+              <app-icon name="star" [size]="20" [filled]="game.isFavorite" />
+            </button>
+            <button
+              type="button"
+              class="icon-btn remove"
+              [disabled]="updating().has(game.gameId) || removing().has(game.gameId)"
+              (click)="remove(game)"
+              [title]="i18n.t('remove')"
+            >
+              @if (removing().has(game.gameId) || updating().has(game.gameId)) {
+                <span class="spinner small"></span>
+              } @else {
+                <app-icon name="trash" [size]="18" />
+              }
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</div>
+
+@if (editing(); as game) {
+  <app-game-dialog
+    [title]="game.title"
+    [initialStatus]="game.status"
+    [initialFavorite]="game.isFavorite"
+    [isUpdate]="true"
+    [busy]="updating().has(game.gameId)"
+    [coverUrl]="coverUrl(game.coverImageUrl)"
+    [allowCover]="true"
+    [friends]="friends()"
+    [showFriendPicker]="true"
+    (confirmed)="saveFromDialog(game, $event)"
+    (closed)="closeEditor()"
+  />
+}

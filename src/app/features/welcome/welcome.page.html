@@ -1,0 +1,131 @@
+<section class="welcome">
+  <div class="welcome-top">
+    <button type="button" class="lang-btn" (click)="i18n.toggle()" [title]="i18n.t('language')">
+      <app-icon name="globe" [size]="16" />
+      <span>{{ i18n.language() === 'pt' ? 'PT-BR' : 'EN' }}</span>
+    </button>
+  </div>
+
+  <div class="art">
+    <div class="stripes" aria-hidden="true">
+      <span class="bar b1"></span>
+      <span class="bar b2"></span>
+      <span class="bar b3"></span>
+      <span class="bar b4"></span>
+      <span class="edge"></span>
+    </div>
+    <div class="halo" aria-hidden="true"></div>
+    <img class="fighter" [src]="frameSrc()" alt="" />
+    <div class="shine" aria-hidden="true"></div>
+  </div>
+
+  <div class="copy">
+    <h1>{{ i18n.t('welcome_title') }}</h1>
+    <p class="subtitle">{{ i18n.t('welcome_subtitle') }}</p>
+
+    @if (error()) {
+      <p class="error-text welcome-error">{{ error() }}</p>
+    }
+
+    <div class="actions">
+      <button type="button" class="btn primary block" (click)="openForm('login')">
+        {{ i18n.t('email_enter') }}
+      </button>
+      <button type="button" class="btn ghost block" (click)="openForm('register')">
+        {{ i18n.t('create_account') }}
+      </button>
+    </div>
+  </div>
+</section>
+
+@if (showForm()) {
+  <app-modal (closed)="closeForm()">
+    <div class="modal-head">
+      <div>
+        <h2>{{ i18n.t(isRegister() ? 'auth_title_register' : 'auth_title_login') }}</h2>
+        <p class="muted small">{{ isRegister() ? 'POST auth/register' : 'POST auth/login' }}</p>
+      </div>
+      <button
+        type="button"
+        class="icon-btn"
+        (click)="closeForm()"
+        [attr.aria-label]="i18n.t('close')"
+      >
+        <app-icon name="close" [size]="20" />
+      </button>
+    </div>
+
+    <form class="stack" (submit)="$event.preventDefault(); submit()">
+      <label class="field">
+        <span>{{ i18n.t('auth_field_email') }}</span>
+        <input
+          class="input"
+          type="email"
+          autocomplete="email"
+          [value]="email()"
+          (input)="email.set($any($event.target).value)"
+          required
+        />
+      </label>
+
+      @if (isRegister()) {
+        <div class="name-grid">
+          <label class="field">
+            <span>{{ i18n.t('auth_field_first') }}</span>
+            <input
+              class="input"
+              type="text"
+              autocomplete="given-name"
+              [value]="firstName()"
+              (input)="firstName.set($any($event.target).value)"
+              required
+            />
+          </label>
+          <label class="field">
+            <span>{{ i18n.t('auth_field_last') }}</span>
+            <input
+              class="input"
+              type="text"
+              autocomplete="family-name"
+              [value]="lastName()"
+              (input)="lastName.set($any($event.target).value)"
+              required
+            />
+          </label>
+        </div>
+      }
+
+      <label class="field">
+        <span>{{ i18n.t('auth_field_password') }}</span>
+        <input
+          class="input"
+          type="password"
+          autocomplete="current-password"
+          [value]="password()"
+          (input)="password.set($any($event.target).value)"
+          minlength="6"
+          required
+        />
+      </label>
+
+      @if (error()) {
+        <p class="error-text">{{ error() }}</p>
+      }
+      @if (success()) {
+        <p class="success-text">{{ success() }}</p>
+      }
+
+      <button type="submit" class="btn primary block" [disabled]="!canSubmit() || loading()">
+        @if (loading()) {
+          <span class="spinner white small"></span>
+        } @else {
+          {{ i18n.t(isRegister() ? 'auth_submit_register' : 'auth_submit_login') }}
+        }
+      </button>
+
+      <button type="button" class="link-btn" (click)="switchMode()">
+        {{ i18n.t(isRegister() ? 'auth_have_account' : 'create_account') }}
+      </button>
+    </form>
+  </app-modal>
+}

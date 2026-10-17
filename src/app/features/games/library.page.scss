@@ -1,0 +1,102 @@
+.filters {
+  margin-bottom: 12px;
+}
+
+.library-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.empty-state {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.library-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.game-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+}
+
+.game-cover {
+  width: 58px;
+  height: 78px;
+  border-radius: 9px;
+  object-fit: cover;
+  flex: 0 0 auto;
+  background: rgba(255, 30, 156, 0.18);
+}
+
+.game-cover.fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.game-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.game-info strong {
+  font-size: 14.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.game-info .status-chip {
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
+.game-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+.game-actions .favorite-on {
+  color: var(--gold);
+}
+
+.game-actions .remove {
+  color: var(--subtitle);
+}
+
+@media (max-width: 520px) {
+  .game-row {
+    gap: 9px;
+  }
+
+  .game-cover {
+    width: 50px;
+    height: 68px;
+  }
+}

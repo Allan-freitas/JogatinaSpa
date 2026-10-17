@@ -1,0 +1,72 @@
+<div class="page author-page">
+  <app-page-header
+    [title]="name() || i18n.t('player')"
+    [back]="true"
+    [backLabel]="i18n.t('back')"
+    (backClicked)="back()"
+  >
+    <button
+      type="button"
+      class="icon-btn"
+      (click)="load(userId())"
+      [title]="i18n.t('refresh_action')"
+    >
+      <app-icon name="refresh" [size]="20" />
+    </button>
+  </app-page-header>
+
+  @if (error()) {
+    <div class="author-error">
+      <span class="error-text">{{ error() }}</span>
+      <button type="button" class="btn small ghost" (click)="load(userId())">
+        {{ i18n.t('retry') }}
+      </button>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="loading"><span class="spinner"></span></div>
+  } @else if (profile(); as profile) {
+    <section class="author-hero">
+      <app-avatar [photoUrl]="photoUrl()" [name]="name()" [size]="84" />
+      <div class="author-text">
+        <h2>{{ name() }}</h2>
+        @if (countryLabel(profile.country); as country) {
+          <span class="muted">{{ country }}</span>
+        }
+        @if (profile.hobbies) {
+          <p>{{ profile.hobbies }}</p>
+        }
+      </div>
+    </section>
+
+    <h3 class="games-title">{{ i18n.t('profile_games', { n: games().length }) }}</h3>
+
+    @if (games().length === 0) {
+      <p class="empty">{{ i18n.t('author_no_games') }}</p>
+    } @else {
+      <div class="grid-games author-grid">
+        @for (game of games(); track game.id) {
+          <article class="card author-card">
+            <div class="cover-wrap">
+              @if (coverUrl(game.coverImageUrl); as cover) {
+                <img class="author-cover" [src]="cover" [alt]="game.title" loading="lazy" />
+              } @else {
+                <div class="author-cover fallback">{{ game.title.charAt(0).toUpperCase() }}</div>
+              }
+              @if (game.isFavorite) {
+                <span class="favorite-star"
+                  ><app-icon name="star" [size]="18" [filled]="true"
+                /></span>
+              }
+            </div>
+            <div class="author-card-info">
+              <strong>{{ game.title }}</strong>
+              <span>{{ statusLabel(game.status) }}</span>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  }
+</div>

@@ -1,0 +1,90 @@
+<div class="page">
+  <app-page-header
+    [title]="i18n.t('notif_title')"
+    [back]="true"
+    [backLabel]="i18n.t('back')"
+    (backClicked)="back()"
+  >
+    <button
+      type="button"
+      class="icon-btn"
+      (click)="store.refresh()"
+      [title]="i18n.t('refresh_action')"
+    >
+      <app-icon name="refresh" [size]="20" />
+    </button>
+  </app-page-header>
+
+  <div class="notif-tools">
+    <div class="chip-row">
+      <button
+        type="button"
+        class="chip"
+        [class.active]="!store.onlyUnread()"
+        (click)="store.setOnlyUnread(false)"
+      >
+        {{ i18n.t('tab_all') }}
+      </button>
+      <button
+        type="button"
+        class="chip"
+        [class.active]="store.onlyUnread()"
+        (click)="store.setOnlyUnread(true)"
+      >
+        {{ i18n.t('tab_unread', { n: store.unreadCount() }) }}
+      </button>
+    </div>
+    <button
+      type="button"
+      class="mark-all"
+      [disabled]="store.markingAll() || store.unreadCount() === 0"
+      (click)="store.markAllAsRead()"
+    >
+      @if (store.markingAll()) {
+        <span class="spinner small"></span>
+      } @else {
+        <app-icon name="check" [size]="16" />
+        <span>{{ i18n.t('mark_all_read') }}</span>
+      }
+    </button>
+  </div>
+
+  @if (store.error()) {
+    <div class="notif-error">
+      <span class="error-text">{{ store.error() }}</span>
+      <button type="button" class="btn small ghost" (click)="store.refresh()">
+        {{ i18n.t('retry') }}
+      </button>
+    </div>
+  }
+
+  @if (store.loading() && store.notifications().length === 0) {
+    <div class="loading"><span class="spinner"></span></div>
+  } @else if (store.visible().length === 0) {
+    <p class="empty">{{ i18n.t(store.onlyUnread() ? 'empty_unread' : 'empty_notif') }}</p>
+  } @else {
+    <div class="notif-list">
+      @for (notification of store.visible(); track notification.id) {
+        <article
+          class="card notif-row fade-in"
+          [class.unread]="!notification.isRead"
+          (click)="open(notification)"
+        >
+          <span class="notif-icon">
+            <app-icon [name]="iconOf(notification.type)" [size]="21" />
+          </span>
+          <div class="notif-body">
+            <strong>{{ notification.title || typeLabel(notification.type) }}</strong>
+            @if (notification.body) {
+              <p>{{ notification.body }}</p>
+            }
+            <small>{{ i18n.timeAgo(notification.createdOnUtc) }}</small>
+          </div>
+          @if (!notification.isRead) {
+            <span class="unread-dot"></span>
+          }
+        </article>
+      }
+    </div>
+  }
+</div>

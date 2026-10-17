@@ -1,0 +1,123 @@
+.search-row {
+  margin-bottom: 10px;
+}
+
+.search-field {
+  position: relative;
+  display: block;
+}
+
+.search-field app-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--white-45);
+}
+
+.search-field .input {
+  padding-left: 38px;
+}
+
+.filter-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.catalog-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.catalog-grid {
+  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+}
+
+.catalog-card {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cover-wrap {
+  position: relative;
+}
+
+.catalog-cover {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  display: block;
+  background: rgba(255, 30, 156, 0.18);
+}
+
+.catalog-cover.fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  font-weight: 800;
+}
+
+.in-library {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.68);
+  color: var(--white);
+  font-size: 10.5px;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 4px 7px;
+  backdrop-filter: blur(4px);
+}
+
+.in-library app-icon {
+  color: var(--green);
+}
+
+.catalog-info {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.catalog-info strong {
+  font-size: 13.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.add-btn {
+  margin-top: 7px;
+  width: 100%;
+}
+
+.load-more {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0 4px;
+}
+
+@media (max-width: 520px) {
+  .filter-row {
+    grid-template-columns: 1fr;
+  }
+}

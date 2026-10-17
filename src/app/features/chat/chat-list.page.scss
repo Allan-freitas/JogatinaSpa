@@ -1,0 +1,118 @@
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.conversation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.conversation-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px;
+  cursor: pointer;
+}
+
+.conversation-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 30, 156, 0.22);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 19px;
+  font-weight: 800;
+  flex: 0 0 auto;
+}
+
+.conversation-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.conversation-body strong {
+  font-size: 14.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.preview {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conversation-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  flex: 0 0 auto;
+}
+
+.conversation-meta small {
+  color: var(--subtitle);
+  font-size: 11px;
+}
+
+.friend-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.friend-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--white);
+  text-align: left;
+  padding: 9px 8px;
+  border-radius: 12px;
+}
+
+.friend-row:hover {
+  background: rgba(255, 30, 156, 0.1);
+}
+
+.friend-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.friend-text strong {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.friend-text small {
+  color: var(--subtitle);
+  font-size: 12px;
+}
+
+.friend-text small.online {
+  color: var(--green);
+}
+
+.friend-row app-icon {
+  color: var(--magenta);
+}

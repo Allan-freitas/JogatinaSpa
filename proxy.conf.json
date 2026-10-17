@@ -1,0 +1,63 @@
+{
+  "/auth": {
+    "target": "https://agfapp.com",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/users": {
+    "target": "https://agfapp.com",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/feed": {
+    "target": "https://agfapp.com",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/games": {
+    "target": "https://agfapp.com",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/notifications": {
+    "target": "https://agfapp.com",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/chat": {
+    "target": "https://agfapp.com",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/chat-images": {
+    "target": "https://agfapp.com",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/social": {
+    "target": "https://agfapp.com",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/uploads": {
+    "target": "https://agfapp.com",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/game-covers": {
+    "target": "https://agfapp.com",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/health": {
+    "target": "https://agfapp.com",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/ws": {
+    "target": "https://agfapp.com",
+    "secure": true,
+    "changeOrigin": true,
+    "ws": true
+  }
+}

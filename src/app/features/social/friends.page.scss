@@ -1,0 +1,155 @@
+.friends-page {
+  max-width: 760px;
+}
+
+.friends-tabs {
+  margin-bottom: 12px;
+}
+
+.friends-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.people-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.people-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 11px;
+}
+
+.round-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 30, 156, 0.22);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 800;
+  flex: 0 0 auto;
+}
+
+.people-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.people-info strong {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.people-info small {
+  color: var(--subtitle);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.people-info small.online {
+  color: var(--green);
+}
+
+.chat-action {
+  color: var(--magenta);
+}
+
+.remove-action {
+  color: var(--subtitle);
+}
+
+.request-card {
+  padding: 11px;
+}
+
+.request-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.accept {
+  color: var(--green);
+}
+
+.decline {
+  color: var(--discord);
+}
+
+.outgoing-badge {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--white-70);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 9px;
+}
+
+.search-box {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.search-box app-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--white-45);
+}
+
+.search-box .input {
+  padding-left: 38px;
+  padding-right: 38px;
+}
+
+.search-box .spinner {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.relation {
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 9px;
+}
+
+.relation.friends {
+  color: var(--green);
+  background: rgba(76, 175, 80, 0.16);
+}
+
+.relation.sent {
+  color: var(--white-70);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.add-action {
+  color: var(--magenta);
+}

@@ -1,0 +1,256 @@
+:host {
+  display: block;
+}
+
+.welcome {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 24px 28px;
+  overflow: hidden;
+}
+
+.welcome-top {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+  z-index: 5;
+}
+
+.lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--white-70);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.lang-btn:hover {
+  color: var(--white);
+  border-color: rgba(255, 30, 156, 0.45);
+}
+
+.art {
+  position: relative;
+  flex: 1;
+  width: min(560px, 100%);
+  min-height: 280px;
+  max-height: 56vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.stripes {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bar {
+  position: absolute;
+  height: 44px;
+  width: 130%;
+  left: -15%;
+  transform: rotate(-18deg);
+  background: var(--magenta);
+  box-shadow: 0 0 28px rgba(255, 30, 156, 0.55);
+}
+
+.b1 {
+  top: 16%;
+  height: 96px;
+  opacity: 0.22;
+  filter: blur(2px);
+}
+
+.b2 {
+  top: 10%;
+  left: -18%;
+  width: 90%;
+}
+
+.b3 {
+  top: 30%;
+  left: 2%;
+  width: 72%;
+  opacity: 0.9;
+}
+
+.b4 {
+  top: 48%;
+  left: 16%;
+  height: 26px;
+  width: 52%;
+  opacity: 0.75;
+}
+
+.edge {
+  position: absolute;
+  right: 4%;
+  top: -10%;
+  width: 12px;
+  height: 95%;
+  background: var(--magenta);
+  transform: rotate(-18deg);
+  box-shadow: 0 0 22px rgba(255, 30, 156, 0.8);
+}
+
+.halo {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 30, 156, 0.42),
+    rgba(255, 30, 156, 0.1) 45%,
+    transparent 70%
+  );
+  animation: halo 4.4s ease-in-out infinite;
+}
+
+.fighter {
+  position: relative;
+  z-index: 2;
+  width: min(340px, 78%);
+  max-height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 22px 30px rgba(0, 0, 0, 0.5));
+  animation: float 4.4s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.shine {
+  position: absolute;
+  inset: -20% -40%;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.13) 50%,
+    transparent 60%
+  );
+  transform: translateX(-60%);
+  animation: shine 5.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.copy {
+  position: relative;
+  z-index: 4;
+  width: min(500px, 100%);
+  text-align: center;
+  padding-bottom: 8px;
+  animation: rise 700ms ease-out both;
+}
+
+.copy h1 {
+  font-size: clamp(24px, 5vw, 34px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 900;
+  text-wrap: balance;
+}
+
+.subtitle {
+  color: var(--subtitle);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 10px auto 0;
+  max-width: 420px;
+}
+
+.welcome-error {
+  margin-top: 14px;
+}
+
+.actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.link-btn {
+  border: 0;
+  background: transparent;
+  color: var(--white-70);
+  font-size: 13px;
+  padding: 6px;
+}
+
+.link-btn:hover {
+  color: var(--white);
+}
+
+.name-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-14px) scale(1.025);
+  }
+}
+
+@keyframes halo {
+  0%,
+  100% {
+    opacity: 0.75;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-70%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  60%,
+  100% {
+    transform: translateX(70%);
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+@media (max-height: 700px) {
+  .art {
+    min-height: 220px;
+    max-height: 44vh;
+  }
+
+  .actions {
+    margin-top: 18px;
+  }
+}

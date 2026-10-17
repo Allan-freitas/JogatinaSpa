@@ -1,0 +1,116 @@
+<div class="page">
+  <app-page-header
+    [title]="i18n.t('catalog_title')"
+    [back]="true"
+    [backLabel]="i18n.t('back')"
+    (backClicked)="historyBack()"
+  />
+
+  <div class="search-row">
+    <label class="search-field">
+      <app-icon name="search" [size]="18" />
+      <input
+        class="input"
+        type="search"
+        [placeholder]="i18n.t('search_games_hint')"
+        [value]="query()"
+        (input)="onQueryChange($any($event.target).value)"
+      />
+    </label>
+  </div>
+
+  <div class="filter-row">
+    <input
+      class="input"
+      type="text"
+      [placeholder]="i18n.t('genre_hint')"
+      [value]="genre()"
+      (input)="onGenreChange($any($event.target).value)"
+    />
+    <input
+      class="input"
+      type="text"
+      [placeholder]="i18n.t('platform_hint')"
+      [value]="platform()"
+      (input)="onPlatformChange($any($event.target).value)"
+    />
+  </div>
+
+  @if (error()) {
+    <div class="catalog-error">
+      <span class="error-text">{{ error() }}</span>
+      <button type="button" class="btn small ghost" (click)="loadPage(1)">
+        {{ i18n.t('retry') }}
+      </button>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="loading"><span class="spinner"></span></div>
+  } @else if (items().length === 0) {
+    <p class="empty">{{ i18n.t('empty_catalog') }}</p>
+  } @else {
+    <div class="grid-games catalog-grid">
+      @for (game of items(); track game.id) {
+        <article class="card catalog-card fade-in">
+          <div class="cover-wrap">
+            @if (coverUrl(game.coverImageUrl); as cover) {
+              <img class="catalog-cover" [src]="cover" [alt]="game.title" loading="lazy" />
+            } @else {
+              <div class="catalog-cover fallback">{{ game.title.charAt(0).toUpperCase() }}</div>
+            }
+            @if (isInLibrary(game.id)) {
+              <span class="in-library">
+                <app-icon name="check" [size]="13" />
+                {{ i18n.t('in_library') }}
+              </span>
+            }
+          </div>
+
+          <div class="catalog-info">
+            <strong>{{ game.title }}</strong>
+            <span class="muted small">{{ game.platform }} • pop. {{ game.popularity }}</span>
+            <button
+              type="button"
+              class="btn small primary add-btn"
+              [disabled]="adding().has(game.id) || isInLibrary(game.id)"
+              (click)="openDialog(game)"
+            >
+              @if (adding().has(game.id)) {
+                <span class="spinner white small"></span>
+              } @else {
+                <app-icon [name]="isInLibrary(game.id) ? 'check' : 'add'" [size]="16" />
+                {{ i18n.t(isInLibrary(game.id) ? 'added' : 'add') }}
+              }
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+
+    @if (hasMore()) {
+      <div class="load-more">
+        <button type="button" class="btn ghost" [disabled]="loadingMore()" (click)="loadMore()">
+          @if (loadingMore()) {
+            <span class="spinner small"></span>
+          } @else {
+            {{ i18n.t('load_more') }}
+          }
+        </button>
+      </div>
+    }
+  }
+</div>
+
+@if (pendingGame(); as game) {
+  <app-game-dialog
+    [title]="game.title"
+    [initialStatus]="'Wishlist'"
+    [initialFavorite]="false"
+    [isUpdate]="isConflict(game)"
+    [conflictMessage]="isConflict(game) ? i18n.t('conflict_msg') : null"
+    [busy]="adding().has(game.id)"
+    (confirmed)="confirm(game, $event)"
+    (closed)="closeDialog()"
+  />
+}

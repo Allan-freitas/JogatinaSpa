@@ -1,0 +1,99 @@
+<div class="page">
+  <app-page-header
+    [title]="i18n.t('chat_title')"
+    [back]="true"
+    [backLabel]="i18n.t('back')"
+    (backClicked)="back()"
+  >
+    <button type="button" class="icon-btn" (click)="openNewChat()" [title]="i18n.t('new_chat')">
+      <app-icon name="plus" [size]="20" />
+    </button>
+    <button
+      type="button"
+      class="icon-btn"
+      (click)="store.refresh()"
+      [title]="i18n.t('refresh_action')"
+    >
+      <app-icon name="refresh" [size]="20" />
+    </button>
+  </app-page-header>
+
+  @if (store.loading() && store.conversations().length === 0) {
+    <div class="loading"><span class="spinner"></span></div>
+  } @else if (store.conversations().length === 0) {
+    <p class="empty">{{ i18n.t('chat_empty') }}</p>
+  } @else {
+    <div class="conversation-list">
+      @for (conversation of store.conversations(); track conversation.conversationId) {
+        <article
+          class="card conversation-row fade-in"
+          (click)="openConversation(conversation.conversationId)"
+        >
+          <span class="conversation-avatar">{{ initial(title(conversation)) }}</span>
+          <div class="conversation-body">
+            <strong>{{ title(conversation) }}</strong>
+            <span class="muted small preview">
+              {{
+                conversation.lastMessage
+                  ? preview(conversation.lastMessage.content)
+                  : i18n.t('say_hi')
+              }}
+            </span>
+          </div>
+          <div class="conversation-meta">
+            @if (conversation.lastMessage) {
+              <small>{{ i18n.timeAgo(conversation.lastMessage.sentOnUtc) }}</small>
+            }
+            @if (conversation.unreadCount > 0) {
+              <span class="badge">{{
+                conversation.unreadCount > 99 ? '99+' : conversation.unreadCount
+              }}</span>
+            }
+          </div>
+        </article>
+      }
+    </div>
+  }
+</div>
+
+@if (showNewChat()) {
+  <app-modal (closed)="closeNewChat()">
+    <div class="modal-head">
+      <div>
+        <h2>{{ i18n.t('new_chat') }}</h2>
+        <p class="muted small">{{ i18n.t('pick_friend') }}</p>
+      </div>
+      <button
+        type="button"
+        class="icon-btn"
+        (click)="closeNewChat()"
+        [attr.aria-label]="i18n.t('close')"
+      >
+        <app-icon name="close" [size]="20" />
+      </button>
+    </div>
+
+    @if (friendsLoading()) {
+      <div class="loading"><span class="spinner"></span></div>
+    } @else if (friendsError()) {
+      <p class="error-text">{{ friendsError() }}</p>
+    } @else if (friends().length === 0) {
+      <p class="empty">{{ i18n.t('no_friends_chat') }}</p>
+    } @else {
+      <div class="friend-picker">
+        @for (friend of friends(); track friend.friendId) {
+          <button type="button" class="friend-row" (click)="startConversation(friend)">
+            <app-avatar [name]="friendName(friend)" [size]="40" [ring]="false" />
+            <span class="friend-text">
+              <strong>{{ friendName(friend) }}</strong>
+              <small [class.online]="friend.isOnline">
+                {{ i18n.t(friend.isOnline ? 'online' : 'offline') }}
+              </small>
+            </span>
+            <app-icon name="send" [size]="18" />
+          </button>
+        }
+      </div>
+    }
+  </app-modal>
+}

@@ -1,0 +1,102 @@
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" routerLink="/feed" aria-label="Jogatina">
+      <img src="assets/jogatina.png" alt="" />
+      <span>JOGATINA</span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Main navigation">
+      <a routerLink="/feed" routerLinkActive="active">
+        <app-icon name="home" [size]="18" />
+        <span>{{ i18n.t('nav_home') }}</span>
+      </a>
+      <a routerLink="/library" routerLinkActive="active">
+        <app-icon name="star" [size]="18" />
+        <span>{{ i18n.t('nav_favorites') }}</span>
+      </a>
+      <a routerLink="/profile" routerLinkActive="active">
+        <app-icon name="person" [size]="18" />
+        <span>{{ i18n.t('nav_profile') }}</span>
+      </a>
+    </nav>
+
+    <div class="topbar-actions">
+      <button
+        type="button"
+        class="lang-btn"
+        (click)="toggleLanguage()"
+        [title]="i18n.t('language')"
+      >
+        <app-icon name="globe" [size]="17" />
+        <span>{{ i18n.language() === 'pt' ? 'PT' : 'EN' }}</span>
+      </button>
+
+      <a
+        class="icon-btn"
+        routerLink="/chat"
+        routerLinkActive="active"
+        (click)="openChat()"
+        [title]="i18n.t('conversations')"
+      >
+        <app-icon name="chat" [size]="21" />
+        @if (chatStore.unreadTotal() > 0) {
+          <span class="badge notif-dot">{{
+            chatStore.unreadTotal() > 99 ? '99+' : chatStore.unreadTotal()
+          }}</span>
+        }
+      </a>
+
+      <a
+        class="icon-btn"
+        routerLink="/notifications"
+        routerLinkActive="active"
+        (click)="openNotifications()"
+        [title]="i18n.t('notifications')"
+      >
+        <app-icon name="bell" [size]="21" />
+        @if (notifications.unreadCount() > 0) {
+          <span class="badge notif-dot">{{
+            notifications.unreadCount() > 99 ? '99+' : notifications.unreadCount()
+          }}</span>
+        }
+      </a>
+
+      <a
+        class="avatar-link"
+        routerLink="/profile"
+        routerLinkActive="active"
+        [title]="i18n.t('nav_profile')"
+      >
+        <app-avatar
+          [photoUrl]="api.absoluteUrl(auth.profile()?.photoUrl)"
+          [name]="auth.displayName()"
+          [size]="34"
+          [ring]="false"
+        />
+      </a>
+
+      <button type="button" class="icon-btn" (click)="logout()" [title]="i18n.t('logout')">
+        <app-icon name="logout" [size]="20" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="shell-main">
+  <router-outlet />
+</main>
+
+<nav class="bottom-nav" aria-label="Main navigation">
+  <a routerLink="/feed" routerLinkActive="active">
+    <app-icon name="home" [size]="21" />
+    <span>{{ i18n.t('nav_home') }}</span>
+  </a>
+  <a routerLink="/library" routerLinkActive="active">
+    <app-icon name="star" [size]="21" />
+    <span>{{ i18n.t('nav_favorites') }}</span>
+  </a>
+  <a routerLink="/profile" routerLinkActive="active">
+    <app-icon name="person" [size]="21" />
+    <span>{{ i18n.t('nav_profile') }}</span>
+  </a>
+</nav>

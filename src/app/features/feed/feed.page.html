@@ -1,0 +1,303 @@
+<div class="page">
+  <app-page-header [title]="greeting()">
+    <button type="button" class="icon-btn" (click)="load()" [title]="i18n.t('refresh_action')">
+      <app-icon name="refresh" [size]="20" />
+    </button>
+  </app-page-header>
+
+  <section class="card composer">
+    <textarea
+      class="textarea"
+      rows="3"
+      [placeholder]="i18n.t('composer_hint')"
+      [value]="composerText()"
+      (input)="onComposerInput($any($event.target).value)"
+    ></textarea>
+
+    @if (composerPreview(); as preview) {
+      <div class="preview">
+        <img [src]="preview" [alt]="i18n.t('attached_image')" />
+        <button
+          type="button"
+          class="icon-btn remove"
+          (click)="clearComposerFile()"
+          [title]="i18n.t('remove_image')"
+        >
+          <app-icon name="close" [size]="17" />
+        </button>
+      </div>
+    }
+
+    <div class="composer-actions">
+      <label class="icon-btn attach" [title]="i18n.t('attach_image')">
+        <app-icon name="image" [size]="21" />
+        <input type="file" accept="image/*" hidden (change)="onComposerFile($event)" />
+      </label>
+      <button type="button" class="btn primary" [disabled]="publishing()" (click)="publish()">
+        @if (publishing()) {
+          <span class="spinner white small"></span>
+        } @else {
+          <app-icon name="send" [size]="17" />
+          {{ i18n.t('publish') }}
+        }
+      </button>
+    </div>
+  </section>
+
+  @if (error()) {
+    <div class="feed-error">
+      <span class="error-text">{{ error() }}</span>
+      <button type="button" class="btn small ghost" (click)="load()">{{ i18n.t('retry') }}</button>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="loading"><span class="spinner"></span></div>
+  } @else if (posts().length === 0) {
+    <p class="empty">{{ i18n.t('empty_feed') }}</p>
+  } @else {
+    <div class="feed-list">
+      @for (post of posts(); track post.id) {
+        <article class="card feed-card fade-in">
+          <header class="post-head">
+            <a class="author" [routerLink]="['/users', post.authorId]">
+              <app-avatar
+                [photoUrl]="postImage(post.authorPhotoUrl)"
+                [name]="post.authorName"
+                [size]="40"
+              />
+              <span class="author-text">
+                <strong>{{ post.authorName }}</strong>
+                <small>{{ i18n.timeAgo(post.createdOnUtc) }}</small>
+              </span>
+            </a>
+            @if (isMine(post)) {
+              <button
+                type="button"
+                class="icon-btn bare delete"
+                [disabled]="deleting().has(post.id)"
+                (click)="deletePost(post)"
+                [title]="i18n.t('delete')"
+              >
+                @if (deleting().has(post.id)) {
+                  <span class="spinner small"></span>
+                } @else {
+                  <app-icon name="trash" [size]="18" />
+                }
+              </button>
+            }
+          </header>
+
+          @if (post.content) {
+            <p class="post-content">{{ post.content }}</p>
+          }
+
+          @if (postImage(post.imageUrl); as image) {
+            <img class="post-media" [src]="image" [alt]="i18n.t('post_image')" loading="lazy" />
+          }
+
+          @if (totalReactions(post) > 0) {
+            <button type="button" class="reaction-summary" (click)="openPicker(post.id)">
+              <span>{{ topEmojis(post) }}</span>
+              <span>{{ totalReactions(post) }}</span>
+            </button>
+          }
+
+          <div class="post-actions">
+            <div class="reaction-wrap">
+              <button
+                type="button"
+                class="reaction-trigger"
+                [class.active]="!!post.myReaction"
+                [disabled]="reacting().has(post.id)"
+                (click)="openPicker(post.id)"
+                [title]="i18n.t('react')"
+              >
+                @if (reacting().has(post.id)) {
+                  <span class="spinner small"></span>
+                } @else if (post.myReaction) {
+                  <span class="emoji">{{ myEmoji(post) }}</span>
+                } @else {
+                  <app-icon name="heart-outline" [size]="21" />
+                }
+              </button>
+
+              <button
+                type="button"
+                class="love-btn"
+                [class.mine]="post.myReaction"
+                [disabled]="reacting().has(post.id)"
+                (click)="quickReact(post)"
+              >
+                {{ post.myReaction === 'heart' ? i18n.t('loved') : i18n.t('love') }}
+              </button>
+
+              @if (pickerFor() === post.id) {
+                <button
+                  type="button"
+                  class="picker-backdrop"
+                  (click)="closePicker()"
+                  tabindex="-1"
+                ></button>
+                <div class="reaction-picker">
+                  @for (reaction of reactions; track reaction.kind) {
+                    <button
+                      type="button"
+                      class="reaction-option"
+                      [class.selected]="post.myReaction === reaction.kind"
+                      (click)="
+                        react(post, post.myReaction === reaction.kind ? null : reaction.kind)
+                      "
+                    >
+                      <span class="reaction-emoji">{{ reaction.emoji }}</span>
+                      <span>{{ i18n.t(reaction.labelKey) }}</span>
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+
+            <button type="button" class="comments-btn" (click)="toggleComments(post)">
+              <app-icon name="chat" [size]="20" />
+              <span>{{ post.commentCount }}</span>
+              <span class="comments-label">{{ i18n.t('comments') }}</span>
+            </button>
+          </div>
+
+          @if (expanded().has(post.id)) {
+            <div class="comments">
+              @if (commentsLoading().has(post.id) && !comments()[post.id]) {
+                <div class="loading small-loading"><span class="spinner small"></span></div>
+              }
+
+              @if (comments()[post.id]; as commentsList) {
+                @for (comment of commentsList; track comment.id) {
+                  <div class="comment">
+                    <a [routerLink]="['/users', comment.authorId]">
+                      <app-avatar
+                        [photoUrl]="postImage(comment.authorPhotoUrl)"
+                        [name]="comment.authorName"
+                        [size]="30"
+                        [ring]="false"
+                      />
+                    </a>
+                    <div class="comment-body">
+                      <div class="comment-top">
+                        <a [routerLink]="['/users', comment.authorId]"
+                          ><strong>{{ comment.authorName }}</strong></a
+                        >
+                        <button
+                          type="button"
+                          class="reply-link"
+                          (click)="setReplyTo(post.id, comment)"
+                        >
+                          {{ i18n.t('reply') }}
+                        </button>
+                      </div>
+                      @if (partsOf(comment.content).text; as text) {
+                        <p>{{ text }}</p>
+                      }
+                      @for (token of partsOf(comment.content).images; track $index) {
+                        <img
+                          class="comment-image"
+                          [src]="resolveImage(token)"
+                          [alt]="i18n.t('attached_image')"
+                        />
+                      }
+                      <small class="muted tiny">{{ i18n.timeAgo(comment.createdOnUtc) }}</small>
+
+                      @for (reply of comment.replies; track reply.id) {
+                        <div class="reply">
+                          <a [routerLink]="['/users', reply.authorId]">
+                            <app-avatar
+                              [photoUrl]="postImage(reply.authorPhotoUrl)"
+                              [name]="reply.authorName"
+                              [size]="24"
+                              [ring]="false"
+                            />
+                          </a>
+                          <div class="comment-body">
+                            <a [routerLink]="['/users', reply.authorId]"
+                              ><strong>{{ reply.authorName }}</strong></a
+                            >
+                            @if (partsOf(reply.content).text; as replyText) {
+                              <p>{{ replyText }}</p>
+                            }
+                            @for (token of partsOf(reply.content).images; track $index) {
+                              <img
+                                class="comment-image"
+                                [src]="resolveImage(token)"
+                                [alt]="i18n.t('attached_image')"
+                              />
+                            }
+                            <small class="muted tiny">{{ i18n.timeAgo(reply.createdOnUtc) }}</small>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+              }
+
+              @if (replyTarget(post.id); as reply) {
+                <div class="replying">
+                  <span>{{ i18n.t('replying_to', { name: reply.authorName }) }}</span>
+                  <button
+                    type="button"
+                    class="icon-btn bare"
+                    (click)="setReplyTo(post.id, null)"
+                    [title]="i18n.t('cancel_reply')"
+                  >
+                    <app-icon name="close" [size]="16" />
+                  </button>
+                </div>
+              }
+
+              @if (commentPreview(post.id); as preview) {
+                <div class="comment-attachment">
+                  <img [src]="preview" [alt]="i18n.t('attached_image')" />
+                  <button type="button" class="icon-btn bare" (click)="clearCommentFile(post.id)">
+                    <app-icon name="close" [size]="16" />
+                  </button>
+                </div>
+              }
+
+              <div class="comment-composer">
+                <label class="icon-btn attach small-attach" [title]="i18n.t('attach_image')">
+                  <app-icon name="image" [size]="19" />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    (change)="onCommentFile(post.id, $event)"
+                  />
+                </label>
+                <input
+                  class="input comment-input"
+                  type="text"
+                  [placeholder]="i18n.t('comment_hint')"
+                  [value]="commentInput(post.id)"
+                  (input)="onCommentInput(post.id, $any($event.target).value)"
+                  (keydown.enter)="submitComment(post)"
+                />
+                <button
+                  type="button"
+                  class="icon-btn send"
+                  [disabled]="sendingComment().has(post.id)"
+                  (click)="submitComment(post)"
+                  [title]="i18n.t('send')"
+                >
+                  @if (sendingComment().has(post.id)) {
+                    <span class="spinner small"></span>
+                  } @else {
+                    <app-icon name="send" [size]="19" />
+                  }
+                </button>
+              </div>
+            </div>
+          }
+        </article>
+      }
+    </div>
+  }
+</div>

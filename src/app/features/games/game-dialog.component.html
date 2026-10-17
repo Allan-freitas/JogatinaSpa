@@ -1,0 +1,91 @@
+<app-modal (closed)="close()">
+  <div class="modal-head">
+    <div class="dialog-title">
+      <h2>{{ title() }}</h2>
+      @if (conflictMessage()) {
+        <p class="conflict">{{ conflictMessage() }}</p>
+      }
+    </div>
+    <button type="button" class="icon-btn" (click)="close()" [attr.aria-label]="i18n.t('close')">
+      <app-icon name="close" [size]="20" />
+    </button>
+  </div>
+
+  @if (allowCover()) {
+    <section class="cover-section">
+      <p class="muted small">{{ i18n.t('cover_section') }}</p>
+      <div class="cover-row">
+        @if (previewUrl(); as cover) {
+          <img class="dialog-cover" [src]="cover" [alt]="i18n.t('cover_image')" />
+        } @else {
+          <div class="dialog-cover fallback">{{ title().charAt(0).toUpperCase() }}</div>
+        }
+        <label class="btn small ghost file-btn">
+          {{ coverFile() ? i18n.t('change_image') : i18n.t('send_cover') }}
+          <input type="file" accept="image/*" hidden (change)="onCoverPicked($event)" />
+        </label>
+      </div>
+      @if (coverError()) {
+        <p class="error-text cover-error">{{ coverError() }}</p>
+      }
+    </section>
+  }
+
+  <section class="status-section">
+    @for (option of statuses; track option.value) {
+      <label class="status-option" [class.selected]="status() === option.value">
+        <input
+          type="radio"
+          name="game-status"
+          [value]="option.value"
+          [checked]="status() === option.value"
+          (change)="setStatus(option.value)"
+        />
+        <span>{{ i18n.t(option.labelKey) }}</span>
+      </label>
+    }
+  </section>
+
+  <label class="favorite-row">
+    <span>{{ i18n.t('favorite') }}</span>
+    <span class="switch" [class.on]="favorite()">
+      <input type="checkbox" [checked]="favorite()" (change)="toggleFavorite()" />
+      <span class="knob"></span>
+    </span>
+  </label>
+
+  @if (showFriendPicker()) {
+    <section class="friends-section">
+      <p class="muted small">{{ i18n.t('play_with_friends') }}</p>
+      @if (friends().length === 0) {
+        <p class="muted small no-friends">{{ i18n.t('no_friends_to_invite') }}</p>
+      } @else {
+        <div class="friends-list">
+          @for (friend of friends(); track friend.friendId) {
+            <label class="friend-option" [class.checked]="selectedFriends().has(friend.friendId)">
+              <input
+                type="checkbox"
+                [checked]="selectedFriends().has(friend.friendId)"
+                (change)="toggleFriend(friend.friendId)"
+              />
+              <span>{{ friend.firstName }} {{ friend.lastName }}</span>
+            </label>
+          }
+        </div>
+      }
+    </section>
+  }
+
+  <div class="modal-actions">
+    <button type="button" class="btn ghost" [disabled]="busy()" (click)="close()">
+      {{ i18n.t('cancel') }}
+    </button>
+    <button type="button" class="btn primary" [disabled]="busy()" (click)="confirm()">
+      @if (busy()) {
+        <span class="spinner white small"></span>
+      } @else {
+        {{ i18n.t(isUpdate() ? 'update' : 'add') }}
+      }
+    </button>
+  </div>
+</app-modal>
