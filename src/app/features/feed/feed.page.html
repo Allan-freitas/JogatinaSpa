@@ -112,6 +112,8 @@
                 [disabled]="reacting().has(post.id)"
                 (click)="openPicker(post.id)"
                 [title]="i18n.t('react')"
+                aria-haspopup="true"
+                [attr.aria-expanded]="pickerFor() === post.id"
               >
                 @if (reacting().has(post.id)) {
                   <span class="spinner small"></span>
@@ -132,29 +134,19 @@
                 {{ post.myReaction === 'heart' ? i18n.t('loved') : i18n.t('love') }}
               </button>
 
-              @if (pickerFor() === post.id) {
-                <button
-                  type="button"
-                  class="picker-backdrop"
-                  (click)="closePicker()"
-                  tabindex="-1"
-                ></button>
-                <div class="reaction-picker">
-                  @for (reaction of reactions; track reaction.kind) {
-                    <button
-                      type="button"
-                      class="reaction-option"
-                      [class.selected]="post.myReaction === reaction.kind"
-                      (click)="
-                        react(post, post.myReaction === reaction.kind ? null : reaction.kind)
-                      "
-                    >
-                      <span class="reaction-emoji">{{ reaction.emoji }}</span>
-                      <span>{{ i18n.t(reaction.labelKey) }}</span>
-                    </button>
-                  }
-                </div>
-              }
+              <div class="reaction-picker" [class.open]="pickerFor() === post.id">
+                @for (reaction of reactions; track reaction.kind) {
+                  <button
+                    type="button"
+                    class="reaction-option"
+                    [class.selected]="post.myReaction === reaction.kind"
+                    (click)="react(post, post.myReaction === reaction.kind ? null : reaction.kind)"
+                  >
+                    <span class="reaction-emoji">{{ reaction.emoji }}</span>
+                    <span>{{ i18n.t(reaction.labelKey) }}</span>
+                  </button>
+                }
+              </div>
             </div>
 
             <button type="button" class="comments-btn" (click)="toggleComments(post)">

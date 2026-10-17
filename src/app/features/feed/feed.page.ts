@@ -1,4 +1,4 @@
-import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
+import { Component, HostListener, OnDestroy, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiError, splitContent } from '../../core/utils';
 import { AuthService } from '../../core/auth/auth.service';
@@ -171,6 +171,15 @@ export class FeedPage implements OnDestroy {
 
   closePicker(): void {
     this.pickerFor.set(null);
+  }
+
+  /** Fecha o seletor quando o clique acontece fora da área de reactions. */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement | null;
+    if (!target?.closest('.reaction-wrap')) {
+      this.closePicker();
+    }
   }
 
   quickReact(post: Post): void {
