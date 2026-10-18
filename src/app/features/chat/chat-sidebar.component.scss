@@ -187,11 +187,33 @@
   text-align: center;
 }
 
+.friend-search {
+  position: relative;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.friend-search app-icon {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--white-45);
+}
+
+.friend-search .input {
+  padding-left: 35px;
+  min-height: 38px;
+  border-radius: 999px;
+  background: rgba(5, 10, 31, 0.55);
+  font-size: 13px;
+}
+
 .friend-picker {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  max-height: 360px;
+  max-height: 320px;
   overflow-y: auto;
 }
 

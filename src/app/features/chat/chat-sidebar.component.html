@@ -107,20 +107,35 @@
     } @else if (friends().length === 0) {
       <p class="empty">{{ i18n.t('no_friends_chat') }}</p>
     } @else {
-      <div class="friend-picker">
-        @for (friend of friends(); track friend.friendId) {
-          <button type="button" class="friend-row" (click)="startConversation(friend)">
-            <app-avatar [name]="friendName(friend)" [size]="40" [ring]="false" />
-            <span class="friend-text">
-              <strong>{{ friendName(friend) }}</strong>
-              <small [class.online]="friend.isOnline">
-                {{ i18n.t(friend.isOnline ? 'online' : 'offline') }}
-              </small>
-            </span>
-            <app-icon name="send" [size]="18" />
-          </button>
-        }
-      </div>
+      <label class="friend-search">
+        <app-icon name="search" [size]="17" />
+        <input
+          class="input"
+          type="search"
+          [placeholder]="i18n.t('search_friends_chat')"
+          [value]="friendQuery()"
+          (input)="onFriendSearch($any($event.target).value)"
+        />
+      </label>
+
+      @if (filteredFriends().length === 0) {
+        <p class="empty">{{ i18n.t('no_friends_found') }}</p>
+      } @else {
+        <div class="friend-picker">
+          @for (friend of filteredFriends(); track friend.friendId) {
+            <button type="button" class="friend-row" (click)="startConversation(friend)">
+              <app-avatar [name]="friendName(friend)" [size]="40" [ring]="false" />
+              <span class="friend-text">
+                <strong>{{ friendName(friend) }}</strong>
+                <small [class.online]="friend.isOnline">
+                  {{ i18n.t(friend.isOnline ? 'online' : 'offline') }}
+                </small>
+              </span>
+              <app-icon name="send" [size]="18" />
+            </button>
+          }
+        </div>
+      }
     }
   </app-modal>
 }

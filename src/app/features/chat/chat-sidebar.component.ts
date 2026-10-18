@@ -28,11 +28,20 @@ export class ChatSidebarComponent {
 
   readonly query = signal('');
   readonly showNewChat = signal(false);
+  readonly friendQuery = signal('');
   readonly friends = signal<Friend[]>([]);
   readonly friendsLoading = signal(false);
   readonly friendsError = signal<string | null>(null);
 
   readonly myUserId = computed(() => this.auth.myUserId());
+
+  readonly filteredFriends = computed(() => {
+    const query = this.friendQuery().trim().toLowerCase();
+    if (!query) {
+      return this.friends();
+    }
+    return this.friends().filter((friend) => this.friendName(friend).toLowerCase().includes(query));
+  });
 
   readonly visibleConversations = computed(() => {
     const query = this.query().trim().toLowerCase();
@@ -70,8 +79,13 @@ export class ChatSidebarComponent {
     void this.router.navigate(['/chat', conversationId]);
   }
 
+  onFriendSearch(value: string): void {
+    this.friendQuery.set(value);
+  }
+
   openNewChat(): void {
     this.showNewChat.set(true);
+    this.friendQuery.set('');
     this.friendsLoading.set(true);
     this.friendsError.set(null);
     this.social.getFriends().subscribe({
@@ -88,6 +102,7 @@ export class ChatSidebarComponent {
 
   closeNewChat(): void {
     this.showNewChat.set(false);
+    this.friendQuery.set('');
   }
 
   startConversation(friend: Friend): void {
