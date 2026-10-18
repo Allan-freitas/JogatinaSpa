@@ -1,0 +1,129 @@
+.people-search {
+  position: relative;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.people-search app-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--white-45);
+}
+
+.people-search .input {
+  padding-left: 38px;
+  padding-right: 38px;
+  border-radius: 999px;
+}
+
+.people-search .spinner {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.search-error {
+  margin-bottom: 10px;
+}
+
+.results {
+  min-height: 120px;
+  max-height: 380px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hint {
+  color: var(--subtitle);
+  font-size: 13px;
+  padding: 18px 8px;
+  text-align: center;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 26px;
+}
+
+.player-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 8px;
+  border-radius: 12px;
+}
+
+.player-row:hover {
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.player-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 30, 156, 0.22);
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.player-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.player-info strong {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player-info small {
+  color: var(--subtitle);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.relation {
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 9px;
+  flex: 0 0 auto;
+}
+
+.relation.friends {
+  color: var(--green);
+  background: rgba(76, 175, 80, 0.16);
+}
+
+.relation.sent {
+  color: var(--white-70);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.add-player {
+  color: var(--magenta);
+  flex: 0 0 auto;
+}
+
+.empty {
+  padding: 24px 12px;
+  text-align: center;
+}

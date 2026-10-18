@@ -1,3 +1,31 @@
+.find-people-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--white-70);
+  font-size: 12.5px;
+  font-weight: 600;
+  transition:
+    color 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease;
+}
+
+.find-people-btn:hover {
+  color: var(--white);
+  border-color: rgba(255, 30, 156, 0.4);
+  background: rgba(255, 30, 156, 0.08);
+}
+
+.find-people-btn app-icon {
+  color: var(--magenta-glow);
+}
+
 .composer {
   padding: 12px;
   margin-bottom: 14px;
@@ -401,6 +429,16 @@
 
 @media (max-width: 640px) {
   .comments-label {
+    display: none;
+  }
+
+  .find-people-btn {
+    width: 38px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .find-people-btn span {
     display: none;
   }
 

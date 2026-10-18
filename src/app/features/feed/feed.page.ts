@@ -9,12 +9,20 @@ import { AvatarComponent } from '../../shared/avatar.component';
 import { ConfirmModalComponent } from '../../shared/confirm-modal.component';
 import { IconComponent } from '../../shared/icon.component';
 import { PageHeaderComponent } from '../../shared/page-header.component';
+import { PeopleSearchModalComponent } from '../../shared/people-search-modal.component';
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
 @Component({
   selector: 'app-feed',
-  imports: [RouterLink, AvatarComponent, ConfirmModalComponent, IconComponent, PageHeaderComponent],
+  imports: [
+    RouterLink,
+    AvatarComponent,
+    ConfirmModalComponent,
+    IconComponent,
+    PageHeaderComponent,
+    PeopleSearchModalComponent,
+  ],
   templateUrl: './feed.page.html',
   styleUrl: './feed.page.scss',
 })
@@ -46,6 +54,7 @@ export class FeedPage implements OnDestroy {
   readonly sendingComment = signal<Set<string>>(new Set());
   readonly deleting = signal<Set<string>>(new Set());
   readonly pendingDelete = signal<Post | null>(null);
+  readonly showFindPlayers = signal(false);
 
   readonly greeting = computed(() =>
     this.i18n.t('greeting', { name: this.auth.profile()?.firstName || this.auth.displayName() }),
@@ -329,6 +338,14 @@ export class FeedPage implements OnDestroy {
     } else {
       send(text);
     }
+  }
+
+  openFindPlayers(): void {
+    this.showFindPlayers.set(true);
+  }
+
+  closeFindPlayers(): void {
+    this.showFindPlayers.set(false);
   }
 
   askDeletePost(post: Post): void {

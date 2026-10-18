@@ -1,5 +1,9 @@
 <div class="page">
   <app-page-header [title]="greeting()">
+    <button type="button" class="find-people-btn" (click)="openFindPlayers()">
+      <app-icon name="search" [size]="17" />
+      <span>{{ i18n.t('find_players') }}</span>
+    </button>
     <button type="button" class="icon-btn" (click)="load()" [title]="i18n.t('refresh_action')">
       <app-icon name="refresh" [size]="20" />
     </button>
@@ -305,4 +309,8 @@
     (confirmed)="confirmDelete()"
     (cancelled)="cancelDelete()"
   />
+}
+
+@if (showFindPlayers()) {
+  <app-people-search-modal (closed)="closeFindPlayers()" />
 }

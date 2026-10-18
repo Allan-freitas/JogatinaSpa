@@ -1,0 +1,75 @@
+<app-modal (closed)="close()">
+  <div class="modal-head">
+    <div>
+      <h2>{{ i18n.t('find_players') }}</h2>
+      <p class="muted small">{{ i18n.t('find_players_hint') }}</p>
+    </div>
+    <button type="button" class="icon-btn" (click)="close()" [attr.aria-label]="i18n.t('close')">
+      <app-icon name="close" [size]="20" />
+    </button>
+  </div>
+
+  <label class="people-search">
+    <app-icon name="search" [size]="18" />
+    <input
+      #searchInput
+      class="input"
+      type="search"
+      autocomplete="off"
+      [placeholder]="i18n.t('search_people_hint')"
+      [value]="query()"
+      (input)="onSearch($any($event.target).value)"
+    />
+    @if (searching()) {
+      <span class="spinner small"></span>
+    }
+  </label>
+
+  @if (error()) {
+    <p class="error-text search-error">{{ error() }}</p>
+  }
+
+  <div class="results">
+    @if (query().trim().length < 2) {
+      <p class="hint">{{ i18n.t('search_people_hint') }}</p>
+    } @else if (searching() && results().length === 0) {
+      <div class="loading"><span class="spinner"></span></div>
+    } @else if (hasSearched() && results().length === 0) {
+      <p class="empty">{{ i18n.t('no_players_found') }}</p>
+    } @else {
+      @for (user of results(); track user.id) {
+        <div class="player-row fade-in">
+          <span class="player-avatar">{{ initial(userName(user)) }}</span>
+          <div class="player-info">
+            <strong>{{ userName(user) }}</strong>
+            <small>{{ user.email }}</small>
+          </div>
+
+          @switch (relationOf(user.id)) {
+            @case ('friend') {
+              <span class="relation friends">{{ i18n.t('badge_friends') }}</span>
+            }
+            @case ('sent') {
+              <span class="relation sent">{{ i18n.t('badge_sent') }}</span>
+            }
+            @default {
+              <button
+                type="button"
+                class="icon-btn add-player"
+                [disabled]="busyIds().has(user.id)"
+                (click)="sendRequest(user)"
+                [title]="i18n.t('add')"
+              >
+                @if (busyIds().has(user.id)) {
+                  <span class="spinner small"></span>
+                } @else {
+                  <app-icon name="add" [size]="20" />
+                }
+              </button>
+            }
+          }
+        </div>
+      }
+    }
+  </div>
+</app-modal>
