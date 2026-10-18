@@ -76,7 +76,7 @@
                 type="button"
                 class="icon-btn bare delete"
                 [disabled]="deleting().has(post.id)"
-                (click)="deletePost(post)"
+                (click)="askDeletePost(post)"
                 [title]="i18n.t('delete')"
               >
                 @if (deleting().has(post.id)) {
@@ -293,3 +293,16 @@
     </div>
   }
 </div>
+
+@if (pendingDelete(); as post) {
+  <app-confirm-modal
+    [title]="i18n.t('delete_post_confirm')"
+    [message]="i18n.t('delete_post_message')"
+    [confirmLabel]="i18n.t('delete')"
+    [cancelLabel]="i18n.t('cancel')"
+    [destructive]="true"
+    [busy]="deleting().has(post.id)"
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+}

@@ -147,6 +147,12 @@ const en: Dictionary = {
   chat_title: 'Chats',
   new_chat: 'New chat',
   pick_friend: 'Pick a friend',
+  search_chat_hint: 'Search conversations...',
+  chat_count_one: '{n} chat',
+  chat_count_many: '{n} chats',
+  no_conversations_found: 'No conversations found.',
+  select_conversation: 'Select a conversation',
+  select_conversation_hint: 'Choose a chat on the left or start a new one.',
   chat_empty: 'No conversations yet. Tap + to ping a friend!',
   say_hi: 'Say hi!',
   no_messages: 'No messages yet. Say hi!',
@@ -165,6 +171,7 @@ const en: Dictionary = {
   cover_image: 'Cover image',
   ok: 'OK',
   delete_post_confirm: 'Delete this post?',
+  delete_post_message: 'This action cannot be undone.',
 };
 
 const pt: Dictionary = {
@@ -312,6 +319,12 @@ const pt: Dictionary = {
   chat_title: 'Conversas',
   new_chat: 'Nova conversa',
   pick_friend: 'Escolha um amigo',
+  search_chat_hint: 'Buscar conversas...',
+  chat_count_one: '{n} conversa',
+  chat_count_many: '{n} conversas',
+  no_conversations_found: 'Nenhuma conversa encontrada.',
+  select_conversation: 'Selecione uma conversa',
+  select_conversation_hint: 'Escolha uma conversa ao lado ou comece uma nova.',
   chat_empty: 'Nenhuma conversa ainda. Toque em + para chamar um amigo!',
   say_hi: 'Diga oi!',
   no_messages: 'Nenhuma mensagem ainda. Diga oi!',
@@ -330,6 +343,7 @@ const pt: Dictionary = {
   cover_image: 'Imagem de capa',
   ok: 'OK',
   delete_post_confirm: 'Apagar este post?',
+  delete_post_message: 'Esta ação não pode ser desfeita.',
 };
 
 export const TRANSLATIONS: Record<Language, Dictionary> = { en, pt };

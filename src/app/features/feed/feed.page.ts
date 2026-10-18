@@ -6,6 +6,7 @@ import { I18nService } from '../../core/i18n/i18n.service';
 import { FeedService } from '../../data/feed.service';
 import { Comment, Post, REACTIONS, reactionEmoji, topReactionEmojis } from '../../data/models';
 import { AvatarComponent } from '../../shared/avatar.component';
+import { ConfirmModalComponent } from '../../shared/confirm-modal.component';
 import { IconComponent } from '../../shared/icon.component';
 import { PageHeaderComponent } from '../../shared/page-header.component';
 
@@ -13,7 +14,7 @@ const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
 @Component({
   selector: 'app-feed',
-  imports: [RouterLink, AvatarComponent, IconComponent, PageHeaderComponent],
+  imports: [RouterLink, AvatarComponent, ConfirmModalComponent, IconComponent, PageHeaderComponent],
   templateUrl: './feed.page.html',
   styleUrl: './feed.page.scss',
 })
@@ -44,6 +45,7 @@ export class FeedPage implements OnDestroy {
   readonly pickerFor = signal<string | null>(null);
   readonly sendingComment = signal<Set<string>>(new Set());
   readonly deleting = signal<Set<string>>(new Set());
+  readonly pendingDelete = signal<Post | null>(null);
 
   readonly greeting = computed(() =>
     this.i18n.t('greeting', { name: this.auth.profile()?.firstName || this.auth.displayName() }),
@@ -329,11 +331,21 @@ export class FeedPage implements OnDestroy {
     }
   }
 
-  deletePost(post: Post): void {
-    if (this.deleting().has(post.id)) {
+  askDeletePost(post: Post): void {
+    this.pendingDelete.set(post);
+  }
+
+  cancelDelete(): void {
+    const post = this.pendingDelete();
+    if (post && this.deleting().has(post.id)) {
       return;
     }
-    if (!confirm(this.i18n.t('delete_post_confirm'))) {
+    this.pendingDelete.set(null);
+  }
+
+  confirmDelete(): void {
+    const post = this.pendingDelete();
+    if (!post || this.deleting().has(post.id)) {
       return;
     }
     this.deleting.set(this.withSet(this.deleting(), post.id, true));
@@ -341,9 +353,11 @@ export class FeedPage implements OnDestroy {
       next: () => {
         this.posts.update((posts) => posts.filter((item) => item.id !== post.id));
         this.deleting.set(this.withSet(this.deleting(), post.id, false));
+        this.pendingDelete.set(null);
       },
       error: (error: unknown) => {
         this.deleting.set(this.withSet(this.deleting(), post.id, false));
+        this.pendingDelete.set(null);
         this.error.set(this.messageOf(error));
       },
     });
