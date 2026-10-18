@@ -28,7 +28,9 @@ export type IconName =
   | 'plus'
   | 'chevron-down'
   | 'sparkles'
-  | 'gamepad';
+  | 'gamepad'
+  | 'music'
+  | 'music-off';
 
 const ICONS: Record<IconName, string[]> = {
   home: ['M3 11.4 12 4l9 7.4', 'M5.5 10v9.5h4.3v-5.8h4.4v5.8h4.3V10'],
@@ -115,6 +117,17 @@ const ICONS: Record<IconName, string[]> = {
     'M7 13h3',
     'M16 12h.1',
     'M18 14h.1',
+  ],
+  music: [
+    'M9 18V5l10-2v13',
+    'M9 18a2.6 2.6 0 1 1-5.2 0 2.6 2.6 0 0 1 5.2 0z',
+    'M19 16a2.6 2.6 0 1 1-5.2 0 2.6 2.6 0 0 1 5.2 0z',
+  ],
+  'music-off': [
+    'M9 18V5l10-2v13',
+    'M9 18a2.6 2.6 0 1 1-5.2 0 2.6 2.6 0 0 1 5.2 0z',
+    'M19 16a2.6 2.6 0 1 1-5.2 0 2.6 2.6 0 0 1 5.2 0z',
+    'M4 4l16 16',
   ],
 };
 

@@ -1,9 +1,25 @@
 <section class="welcome">
   <div class="welcome-top">
-    <button type="button" class="lang-btn" (click)="i18n.toggle()" [title]="i18n.t('language')">
-      <app-icon name="globe" [size]="16" />
-      <span>{{ i18n.language() === 'pt' ? 'PT-BR' : 'EN' }}</span>
-    </button>
+    <div class="brand">
+      <img src="assets/jogatina-icon.png" alt="" />
+      <span>JOGATINA</span>
+    </div>
+    <div class="top-actions">
+      <button
+        type="button"
+        class="lang-btn music-btn"
+        [class.active]="music.playing()"
+        (click)="toggleMusic()"
+        [title]="i18n.t(music.playing() ? 'music_off' : 'music_on')"
+        [attr.aria-pressed]="music.playing()"
+      >
+        <app-icon [name]="music.playing() ? 'music' : 'music-off'" [size]="16" />
+      </button>
+      <button type="button" class="lang-btn" (click)="i18n.toggle()" [title]="i18n.t('language')">
+        <app-icon name="globe" [size]="16" />
+        <span>{{ i18n.language() === 'pt' ? 'PT-BR' : 'EN' }}</span>
+      </button>
+    </div>
   </div>
 
   <div class="art">
@@ -61,7 +77,10 @@
         <input
           class="input"
           type="email"
+          inputmode="email"
           autocomplete="email"
+          autocapitalize="none"
+          spellcheck="false"
           [value]="email()"
           (input)="email.set($any($event.target).value)"
           required
@@ -100,7 +119,7 @@
         <input
           class="input"
           type="password"
-          autocomplete="current-password"
+          [attr.autocomplete]="isRegister() ? 'new-password' : 'current-password'"
           [value]="password()"
           (input)="password.set($any($event.target).value)"
           minlength="6"

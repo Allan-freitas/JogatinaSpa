@@ -135,7 +135,7 @@ export class NotificationsService {
     ) {
       new Notification(notification.title || 'Jogatina', {
         body: notification.body,
-        icon: 'assets/jogatina.png',
+        icon: 'assets/jogatina-icon.png',
       });
     }
   }

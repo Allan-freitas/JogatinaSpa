@@ -24,6 +24,8 @@ const en: Dictionary = {
   language: 'Language',
   language_en: 'English',
   language_pt: 'Portuguese',
+  music_on: 'Play music',
+  music_off: 'Pause music',
   error_generic: 'Something went wrong. Try again.',
   network_error: 'Could not reach the server. Check your connection and try again.',
 
@@ -201,6 +203,8 @@ const pt: Dictionary = {
   language: 'Idioma',
   language_en: 'Inglês',
   language_pt: 'Português',
+  music_on: 'Tocar música',
+  music_off: 'Pausar música',
   error_generic: 'Algo deu errado. Tente de novo.',
   network_error: 'Não foi possível falar com o servidor. Verifique a conexão e tente de novo.',
 

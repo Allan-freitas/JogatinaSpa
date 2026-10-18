@@ -24,7 +24,8 @@ import { Component, HostListener, input, output } from '@angular/core';
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 16px;
+        padding: max(16px, env(safe-area-inset-top, 0px)) 16px
+          max(16px, env(safe-area-inset-bottom, 0px));
         background: rgba(2, 5, 18, 0.78);
         backdrop-filter: blur(6px);
         animation: fade 160ms ease-out;
@@ -32,8 +33,11 @@ import { Component, HostListener, input, output } from '@angular/core';
       .modal-card {
         width: 100%;
         max-width: 460px;
-        max-height: calc(100vh - 32px);
+        max-height: calc(
+          100dvh - 32px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)
+        );
         overflow-y: auto;
+        overscroll-behavior: contain;
         border-radius: 20px;
         border: 1px solid rgba(255, 30, 156, 0.24);
         background: var(--navy-mid);

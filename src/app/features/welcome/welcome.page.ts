@@ -1,6 +1,7 @@
 import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiError } from '../../core/utils';
+import { MusicService } from '../../core/audio/music.service';
 import { AuthService, RegisterOutcome } from '../../core/auth/auth.service';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { ModalComponent } from '../../shared/modal.component';
@@ -17,6 +18,7 @@ type AuthMode = 'login' | 'register';
 export class WelcomePage implements OnDestroy {
   readonly auth = inject(AuthService);
   readonly i18n = inject(I18nService);
+  readonly music = inject(MusicService);
   private readonly router = inject(Router);
 
   readonly mode = signal<AuthMode>('login');
@@ -55,6 +57,11 @@ export class WelcomePage implements OnDestroy {
     if (this.kickTimer) {
       clearInterval(this.kickTimer);
     }
+    this.music.stop();
+  }
+
+  toggleMusic(): void {
+    this.music.toggle();
   }
 
   frameSrc(): string {

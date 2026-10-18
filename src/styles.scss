@@ -550,6 +550,12 @@ p {
   }
 }
 
+@media (max-width: 760px) {
+  body {
+    background-attachment: scroll;
+  }
+}
+
 @media (max-width: 640px) {
   .page {
     padding: 12px 12px 108px;
