@@ -66,6 +66,14 @@ O build de produção usa `src/environments/environment.production.ts`
 Sirva essa pasta em qualquer host estático (o roteamento precisa de fallback para
 `index.html`).
 
+### Preview em redes sociais
+
+As metatags **Open Graph / Twitter** ficam em `src/index.html` e usam a imagem
+`public/assets/jogatina-social.jpg` (1200×630). Se o domínio do SPA mudar,
+atualize `canonical`, `og:url`, `og:image` e `twitter:image` para o novo endereço.
+O WhatsApp costuma cachear o preview: para forçar uma nova leitura, compartilhe a
+URL com um parâmetro novo (ex.: `?v=2`) ou aguarde o cache expirar.
+
 ## CORS na API
 
 Para o SPA conseguir chamar a API diretamente de outra origem, o
