@@ -1,0 +1,19 @@
+<div class="chat-shell">
+  <aside class="chat-sidebar-panel" [class.mobile-hidden]="hasActiveConversation()">
+    <app-chat-sidebar [activeConversationId]="activeConversationId()" />
+  </aside>
+
+  <section class="chat-content-panel" [class.mobile-hidden]="!hasActiveConversation()">
+    <router-outlet />
+
+    @if (!hasActiveConversation()) {
+      <div class="chat-empty-pane">
+        <span class="empty-icon">
+          <app-icon name="chat" [size]="34" />
+        </span>
+        <h2>{{ i18n.t('select_conversation') }}</h2>
+        <p>{{ i18n.t('select_conversation_hint') }}</p>
+      </div>
+    }
+  </section>
+</div>

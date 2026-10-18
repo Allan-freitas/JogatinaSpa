@@ -1,0 +1,126 @@
+<header class="sidebar-head">
+  <div class="sidebar-title-row">
+    <button type="button" class="icon-btn" (click)="back()" [title]="i18n.t('back')">
+      <app-icon name="back" [size]="20" />
+    </button>
+
+    <div class="sidebar-title">
+      <h1>{{ i18n.t('chat_title') }}</h1>
+      <span>{{ conversationCount() }}</span>
+    </div>
+
+    <button
+      type="button"
+      class="icon-btn accent"
+      (click)="openNewChat()"
+      [title]="i18n.t('new_chat')"
+    >
+      <app-icon name="plus" [size]="20" />
+    </button>
+    <button
+      type="button"
+      class="icon-btn"
+      (click)="store.refresh()"
+      [title]="i18n.t('refresh_action')"
+    >
+      <app-icon name="refresh" [size]="20" />
+    </button>
+  </div>
+
+  <label class="sidebar-search">
+    <app-icon name="search" [size]="17" />
+    <input
+      class="input"
+      type="search"
+      [placeholder]="i18n.t('search_chat_hint')"
+      [value]="query()"
+      (input)="onSearch($any($event.target).value)"
+    />
+  </label>
+</header>
+
+<div class="sidebar-scroll">
+  @if (store.loading() && store.conversations().length === 0) {
+    <div class="loading"><span class="spinner"></span></div>
+  } @else if (store.conversations().length === 0) {
+    <p class="empty">{{ i18n.t('chat_empty') }}</p>
+  } @else if (visibleConversations().length === 0) {
+    <p class="empty">{{ i18n.t('no_conversations_found') }}</p>
+  } @else {
+    @for (conversation of visibleConversations(); track conversation.conversationId) {
+      <button
+        type="button"
+        class="conversation-row fade-in"
+        [class.active]="conversation.conversationId === activeConversationId()"
+        [class.unread]="conversation.unreadCount > 0"
+        (click)="openConversation(conversation.conversationId)"
+      >
+        <span class="conversation-avatar">{{ initial(title(conversation)) }}</span>
+
+        <span class="conversation-body">
+          <strong>{{ title(conversation) }}</strong>
+          <span class="preview">
+            {{
+              conversation.lastMessage
+                ? preview(conversation.lastMessage.content)
+                : i18n.t('say_hi')
+            }}
+          </span>
+        </span>
+
+        <span class="conversation-meta">
+          @if (conversation.lastMessage) {
+            <small>{{ i18n.timeAgo(conversation.lastMessage.sentOnUtc) }}</small>
+          }
+          @if (conversation.unreadCount > 0) {
+            <span class="badge">{{
+              conversation.unreadCount > 99 ? '99+' : conversation.unreadCount
+            }}</span>
+          }
+        </span>
+      </button>
+    }
+  }
+</div>
+
+@if (showNewChat()) {
+  <app-modal (closed)="closeNewChat()">
+    <div class="modal-head">
+      <div>
+        <h2>{{ i18n.t('new_chat') }}</h2>
+        <p class="muted small">{{ i18n.t('pick_friend') }}</p>
+      </div>
+      <button
+        type="button"
+        class="icon-btn"
+        (click)="closeNewChat()"
+        [attr.aria-label]="i18n.t('close')"
+      >
+        <app-icon name="close" [size]="20" />
+      </button>
+    </div>
+
+    @if (friendsLoading()) {
+      <div class="loading"><span class="spinner"></span></div>
+    } @else if (friendsError()) {
+      <p class="error-text">{{ friendsError() }}</p>
+    } @else if (friends().length === 0) {
+      <p class="empty">{{ i18n.t('no_friends_chat') }}</p>
+    } @else {
+      <div class="friend-picker">
+        @for (friend of friends(); track friend.friendId) {
+          <button type="button" class="friend-row" (click)="startConversation(friend)">
+            <app-avatar [name]="friendName(friend)" [size]="40" [ring]="false" />
+            <span class="friend-text">
+              <strong>{{ friendName(friend) }}</strong>
+              <small [class.online]="friend.isOnline">
+                {{ i18n.t(friend.isOnline ? 'online' : 'offline') }}
+              </small>
+            </span>
+            <app-icon name="send" [size]="18" />
+          </button>
+        }
+      </div>
+    }
+  </app-modal>
+}

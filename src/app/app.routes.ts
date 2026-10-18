@@ -37,17 +37,19 @@ export const routes: Routes = [
       {
         path: 'chat',
         loadComponent: () =>
-          import('./features/chat/chat-list.page').then((module) => module.ChatListPage),
-      },
-      {
-        path: 'chat/new/:friendId',
-        loadComponent: () =>
-          import('./features/chat/conversation.page').then((module) => module.ConversationPage),
-      },
-      {
-        path: 'chat/:conversationId',
-        loadComponent: () =>
-          import('./features/chat/conversation.page').then((module) => module.ConversationPage),
+          import('./features/chat/chat-layout.page').then((module) => module.ChatLayoutPage),
+        children: [
+          {
+            path: 'new/:friendId',
+            loadComponent: () =>
+              import('./features/chat/conversation.page').then((module) => module.ConversationPage),
+          },
+          {
+            path: ':conversationId',
+            loadComponent: () =>
+              import('./features/chat/conversation.page').then((module) => module.ConversationPage),
+          },
+        ],
       },
       {
         path: 'profile',

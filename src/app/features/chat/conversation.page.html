@@ -1,98 +1,115 @@
 <div class="conversation-page">
-  <div class="conversation-head">
-    <app-page-header
-      [title]="title()"
-      [back]="true"
-      [backLabel]="i18n.t('back')"
-      (backClicked)="back()"
-    >
-      <span class="connection-dot" [class.online]="socket.connected()"></span>
-    </app-page-header>
-    <p class="connection-text" [class.online]="socket.connected()">{{ connectionText() }}</p>
-  </div>
+  <header class="conv-head">
+    <button type="button" class="icon-btn back" (click)="back()" [title]="i18n.t('back')">
+      <app-icon name="back" [size]="21" />
+    </button>
+
+    <span class="conv-avatar">{{ conversationInitial() }}</span>
+
+    <div class="conv-heading">
+      <strong>{{ title() }}</strong>
+      <span class="conv-status" [class.online]="socket.connected()">
+        <span class="status-dot" [class.online]="socket.connected()"></span>
+        {{ connectionText() }}
+      </span>
+    </div>
+  </header>
 
   <div class="messages-scroll" #scroll>
-    @if (loadingHistory()) {
-      <div class="loading"><span class="spinner"></span></div>
-    } @else if (messages().length === 0) {
-      <p class="empty">{{ i18n.t('no_messages') }}</p>
-    } @else {
-      @for (message of messages(); track message.id) {
-        <div class="bubble-row" [class.mine]="isMine(message)">
-          <div class="bubble" [class.pending]="isPending(message)">
-            @if (partsOf(message.content).text; as text) {
-              <p>{{ text }}</p>
-            }
-            @for (token of partsOf(message.content).images; track $index) {
-              <img
-                class="chat-image"
-                [src]="imageUrl(token)"
-                [alt]="i18n.t('chat_image_label')"
-                loading="lazy"
-              />
-            }
-            <small>{{ i18n.timeAgo(message.sentOnUtc) }}</small>
-          </div>
+    <div class="messages-inner">
+      @if (loadingHistory()) {
+        <div class="loading"><span class="spinner"></span></div>
+      } @else if (messages().length === 0) {
+        <div class="conversation-empty">
+          <span class="empty-icon"><app-icon name="chat" [size]="26" /></span>
+          <p>{{ i18n.t('no_messages') }}</p>
         </div>
-      }
-    }
-  </div>
-
-  @if (error()) {
-    <p class="error-text chat-error">{{ error() }}</p>
-  }
-
-  @if (pickedPreview(); as preview) {
-    <div class="attachment">
-      <img [src]="preview" [alt]="i18n.t('attached_image')" />
-      <span>{{ i18n.t(uploading() ? 'chat_uploading' : 'attached_image') }}</span>
-      @if (uploading()) {
-        <span class="spinner small"></span>
       } @else {
-        <button
-          type="button"
-          class="icon-btn bare"
-          (click)="clearFile()"
-          [title]="i18n.t('remove_image')"
-        >
-          <app-icon name="close" [size]="17" />
-        </button>
+        @for (message of messages(); track message.id) {
+          <div class="bubble-row" [class.mine]="isMine(message)">
+            @if (!isMine(message)) {
+              <span class="message-avatar">{{ senderInitial(message) }}</span>
+            }
+
+            <div class="bubble" [class.pending]="isPending(message)">
+              @if (partsOf(message.content).text; as text) {
+                <p>{{ text }}</p>
+              }
+              @for (token of partsOf(message.content).images; track $index) {
+                <img
+                  class="chat-image"
+                  [src]="imageUrl(token)"
+                  [alt]="i18n.t('chat_image_label')"
+                  loading="lazy"
+                />
+              }
+              <span class="bubble-time">{{ i18n.timeAgo(message.sentOnUtc) }}</span>
+            </div>
+          </div>
+        }
       }
     </div>
-  }
+  </div>
 
-  <div class="chat-composer">
-    <label class="icon-btn attach" [title]="i18n.t('attach_image')">
-      <app-icon name="image" [size]="21" />
+  <footer class="composer-area">
+    @if (error()) {
+      <p class="error-text chat-error">{{ error() }}</p>
+    }
+
+    @if (pickedPreview(); as preview) {
+      <div class="attachment">
+        <img [src]="preview" [alt]="i18n.t('attached_image')" />
+        <span>{{ i18n.t(uploading() ? 'chat_uploading' : 'attached_image') }}</span>
+        @if (uploading()) {
+          <span class="spinner small"></span>
+        } @else {
+          <button
+            type="button"
+            class="icon-btn bare"
+            (click)="clearFile()"
+            [title]="i18n.t('remove_image')"
+          >
+            <app-icon name="close" [size]="17" />
+          </button>
+        }
+      </div>
+    }
+
+    <div class="composer-row">
+      <label class="icon-btn attach" [title]="i18n.t('attach_image')">
+        <app-icon name="image" [size]="21" />
+        <input
+          type="file"
+          accept="image/*"
+          hidden
+          (change)="onFilePicked($event)"
+          [disabled]="sending()"
+        />
+      </label>
+
       <input
-        type="file"
-        accept="image/*"
-        hidden
-        (change)="onFilePicked($event)"
+        class="input chat-input"
+        type="text"
+        [placeholder]="i18n.t('message_hint')"
+        [value]="input()"
+        (input)="onInput($any($event.target).value)"
+        (keydown.enter)="send()"
         [disabled]="sending()"
       />
-    </label>
-    <input
-      class="input chat-input"
-      type="text"
-      [placeholder]="i18n.t('message_hint')"
-      [value]="input()"
-      (input)="onInput($any($event.target).value)"
-      (keydown.enter)="send()"
-      [disabled]="sending()"
-    />
-    <button
-      type="button"
-      class="icon-btn send"
-      [disabled]="sending()"
-      (click)="send()"
-      [title]="i18n.t('send')"
-    >
-      @if (sending()) {
-        <span class="spinner small"></span>
-      } @else {
-        <app-icon name="send" [size]="21" />
-      }
-    </button>
-  </div>
+
+      <button
+        type="button"
+        class="send-btn"
+        [disabled]="sending()"
+        (click)="send()"
+        [title]="i18n.t('send')"
+      >
+        @if (sending()) {
+          <span class="spinner white small"></span>
+        } @else {
+          <app-icon name="send" [size]="20" />
+        }
+      </button>
+    </div>
+  </footer>
 </div>

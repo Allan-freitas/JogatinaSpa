@@ -1,29 +1,32 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { splitContent } from '../../core/utils';
 import { ChatStoreService } from '../../data/chat-store.service';
-import { conversationTitle, Friend, fullName } from '../../data/models';
+import { Conversation, Friend, conversationTitle, fullName } from '../../data/models';
 import { SocialService } from '../../data/social.service';
 import { AvatarComponent } from '../../shared/avatar.component';
 import { IconComponent } from '../../shared/icon.component';
 import { ModalComponent } from '../../shared/modal.component';
-import { PageHeaderComponent } from '../../shared/page-header.component';
 
 @Component({
-  selector: 'app-chat-list',
-  imports: [AvatarComponent, IconComponent, ModalComponent, PageHeaderComponent],
-  templateUrl: './chat-list.page.html',
-  styleUrl: './chat-list.page.scss',
+  selector: 'app-chat-sidebar',
+  imports: [AvatarComponent, IconComponent, ModalComponent],
+  templateUrl: './chat-sidebar.component.html',
+  styleUrl: './chat-sidebar.component.scss',
 })
-export class ChatListPage {
+export class ChatSidebarComponent {
+  readonly activeConversationId = input<string | null>(null);
+
   readonly i18n = inject(I18nService);
   readonly store = inject(ChatStoreService);
   readonly auth = inject(AuthService);
+
   private readonly social = inject(SocialService);
   private readonly router = inject(Router);
 
+  readonly query = signal('');
   readonly showNewChat = signal(false);
   readonly friends = signal<Friend[]>([]);
   readonly friendsLoading = signal(false);
@@ -31,12 +34,36 @@ export class ChatListPage {
 
   readonly myUserId = computed(() => this.auth.myUserId());
 
+  readonly visibleConversations = computed(() => {
+    const query = this.query().trim().toLowerCase();
+    const conversations = this.store.conversations();
+    if (!query) {
+      return conversations;
+    }
+    return conversations.filter((conversation) => {
+      const title = this.title(conversation).toLowerCase();
+      const preview = conversation.lastMessage
+        ? this.preview(conversation.lastMessage.content).toLowerCase()
+        : '';
+      return title.includes(query) || preview.includes(query);
+    });
+  });
+
   constructor() {
     void this.store.refresh();
   }
 
   back(): void {
     void this.router.navigate(['/feed']);
+  }
+
+  conversationCount(): string {
+    const total = this.store.conversations().length;
+    return this.i18n.t(total === 1 ? 'chat_count_one' : 'chat_count_many', { n: total });
+  }
+
+  onSearch(value: string): void {
+    this.query.set(value);
   }
 
   openConversation(conversationId: string): void {
@@ -68,7 +95,7 @@ export class ChatListPage {
     void this.router.navigate(['/chat/new', friend.friendId], { state: { friend } });
   }
 
-  title(conversation: Parameters<typeof conversationTitle>[0]): string {
+  title(conversation: Conversation): string {
     return conversationTitle(conversation, this.myUserId());
   }
 

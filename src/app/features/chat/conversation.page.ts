@@ -10,13 +10,12 @@ import { ChatStoreService } from '../../data/chat-store.service';
 import { ChatMessage, Friend, conversationTitle, fullName } from '../../data/models';
 import { SocialService } from '../../data/social.service';
 import { IconComponent } from '../../shared/icon.component';
-import { PageHeaderComponent } from '../../shared/page-header.component';
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
 @Component({
   selector: 'app-conversation',
-  imports: [IconComponent, PageHeaderComponent],
+  imports: [IconComponent],
   templateUrl: './conversation.page.html',
   styleUrl: './conversation.page.scss',
 })
@@ -89,6 +88,20 @@ export class ConversationPage implements OnDestroy {
     return this.hasDisconnected()
       ? this.i18n.t('chat_reconnecting')
       : this.i18n.t('chat_connecting');
+  }
+
+  conversationInitial(): string {
+    return this.title().trim().charAt(0).toUpperCase() || '?';
+  }
+
+  senderInitial(message: ChatMessage): string {
+    const conversation =
+      this.store.conversations().find((item) => item.conversationId === message.conversationId) ??
+      this.store
+        .conversations()
+        .find((item) => item.participants.some((p) => p.userId === message.senderId));
+    const participant = conversation?.participants.find((p) => p.userId === message.senderId);
+    return (participant?.firstName?.trim().charAt(0) || this.conversationInitial()).toUpperCase();
   }
 
   back(): void {
